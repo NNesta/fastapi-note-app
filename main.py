@@ -1,9 +1,16 @@
 from fastapi import FastAPI
 from router import router
 from database import Base, engine
+from contextlib import asynccontextmanager
 
 
-Base.metadata.create_all(bind=engine)
-app = FastAPI()
-app.include_router(router)
+@asynccontextmanager
+async def lifespan(_app:FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+    await engine.dispose()
+
+app = FastAPI(lifespan=lifespan)
+app.include_router(router, prefix="/api/notes", tags=["Notes"])
 
