@@ -1,6 +1,9 @@
-def main():
-    print("Hello from fastapi-note-app!")
+from fastapi import FastAPI
+from router import router
+from database import Base, engine
 
 
-if __name__ == "__main__":
-    main()
+Base.metadata.create_all(bind=engine)
+app = FastAPI()
+app.include_router(router)
+
