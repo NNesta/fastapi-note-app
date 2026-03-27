@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from router import router
-from database import Base, engine
+from routes import note_router
+from db import Base, engine
 from contextlib import asynccontextmanager
 
 
@@ -12,5 +12,5 @@ async def lifespan(_app:FastAPI):
     await engine.dispose()
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(router, prefix="/api/notes", tags=["Notes"])
+app.include_router(note_router, prefix="/api/notes", tags=["Notes"])
 

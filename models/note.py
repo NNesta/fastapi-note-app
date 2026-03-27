@@ -1,8 +1,8 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database import Base
+from db.base import Base
 
 class Note(Base):
     __tablename__ = "notes"

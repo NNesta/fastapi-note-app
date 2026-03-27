@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException
 from schemas import NoteResponse, NoteCreate, NoteUpdate
 from models import Note
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_db
+from db import get_db
 from typing import Annotated
 from fastapi import Depends
 from sqlalchemy import select
@@ -28,7 +28,7 @@ async def create_note(note: NoteCreate, db: Annotated[AsyncSession, Depends(get_
     return new_note
 
 @router.put("/{note_id}", response_model=NoteResponse)
-async def update_note(note_id: int, note_data:NoteCreate, db: Annotated[AsyncSession, Depends(get_db)]):
+async def replace_note(note_id: int, note_data:NoteCreate, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(select(Note).where(Note.id == note_id))
     note = result.scalar_one_or_none()
     if not note:
@@ -40,7 +40,7 @@ async def update_note(note_id: int, note_data:NoteCreate, db: Annotated[AsyncSes
     return note
 
 @router.patch("/{note_id}", response_model=NoteResponse)
-async def update_note(note_id: int, note_data:NoteUpdate, db: Annotated[AsyncSession, Depends(get_db)]):
+async def patch_note(note_id: int, note_data:NoteUpdate, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(select(Note).where(Note.id == note_id))
     note = result.scalar_one_or_none()
     if not note:
@@ -52,7 +52,7 @@ async def update_note(note_id: int, note_data:NoteUpdate, db: Annotated[AsyncSes
     await db.refresh(note)
     return note
 
-@router.delete("/",status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{note_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_note(note_id, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(select(Note).where(Note.id == note_id))
     note = result.scalar_one_or_none()
