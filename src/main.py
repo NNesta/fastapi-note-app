@@ -13,4 +13,5 @@ async def lifespan(_app:FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(note_router, prefix="/api/notes", tags=["Notes"])
+# app.include_router(payment_router, prefix="/api/payment", tags=["Payments"])
 
